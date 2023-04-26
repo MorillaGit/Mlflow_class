@@ -101,7 +101,7 @@ class Experiment:
             train_generator,
             validation_data=test_ds,
             epochs=self.epochs,
-            callbacks=[callbacks.EarlyStopping(patience=3, restore_best_weights=True)],
+            callbacks=[callbacks.EarlyStopping(patience=5, restore_best_weights=True)],
         )
         return history
 
@@ -115,11 +115,6 @@ class Experiment:
     def log_metrics(self, history):
         for key, value in history.history.items():
             mlflow.log_metric(key, value[-1])
-
-        # # Almacenar la métrica val_acc
-        # val_acc = history.history["val_accuracy"][-1]
-        # mlflow.log_metric("val_acc", val_acc)
-
 
 def registrar_experiment(experiment: Experiment, experiment_name: str = None):
     with mlflow.start_run(nested=True):

@@ -1,3 +1,5 @@
 mlruns/
 datasets/
 src/__pycache__/
+accuracy.png
+loss.png

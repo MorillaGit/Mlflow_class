@@ -1,6 +1,7 @@
-from typing import Tuple
+# Import typing for type hints
+from typing import Tuple, List, Optional
 
-from tensorflow.keras.applications import ResNet50
+# Import libraries for deep learning models
 from tensorflow.keras.layers import (
     AveragePooling2D,
     Conv2D,
@@ -10,9 +11,22 @@ from tensorflow.keras.layers import (
     Input,
     Rescaling,
 )
-from tensorflow.keras import optimizers, callbacks
 
+# Import libraries for optimizer and callbacks
+from tensorflow.keras import optimizers, callbacks
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.applications import (
+    EfficientNetB0,
+    EfficientNetB1,
+    EfficientNetB2,
+    EfficientNetB3,
+    EfficientNetB4,
+    EfficientNetB5,
+    EfficientNetB6,
+    EfficientNetB7,
+    ResNet50,
+    InceptionV3,
+)
 
 
 def create_mlp_model(input_shape: Tuple[int, int, int], num_classes: int) -> Sequential:
@@ -181,7 +195,6 @@ def create_resnet50_model(
 
 
 # /////////////////////////////////////////////////////////////////////////////////////////////
-# /////////////////////////////////////////////////////////////////////////////////////////////
 
 
 def create_resnet50_model_compiled(
@@ -235,21 +248,6 @@ def create_resnet50_model_compiled(
 # /////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////////////////////////////////////////
 
-from typing import Tuple, List, Optional
-from tensorflow.keras.applications import (
-    EfficientNetB0,
-    EfficientNetB1,
-    EfficientNetB2,
-    EfficientNetB3,
-    EfficientNetB4,
-    EfficientNetB5,
-    EfficientNetB6,
-    EfficientNetB7,
-)
-from tensorflow.keras.layers import Dense, Dropout, Flatten
-from tensorflow.keras.models import Sequential
-from tensorflow.keras import optimizers
-
 
 def create_efficientnet_model_compiled(
     input_shape: Tuple[int, int, int],
@@ -292,9 +290,6 @@ def create_efficientnet_model_compiled(
     if version not in efficientnets:
         raise ValueError("Invalid EfficientNet version. Must be between 0 and 7.")
 
-    if additional_layers is not None and len(neurons_per_layer) != additional_layers:
-
-
     efficientnet = efficientnets[version](
         weights="imagenet", include_top=False, input_shape=input_shape
     )
@@ -308,9 +303,10 @@ def create_efficientnet_model_compiled(
 
     model.add(Flatten())
 
-    for neurons in neurons_per_layer:
-        model.add(Dense(neurons, activation="relu"))
-        model.add(Dropout(dropout))
+    if additional_layers > 0:
+        for neurons in neurons_per_layer:
+            model.add(Dropout(dropout))
+            model.add(Dense(neurons, activation="relu"))
 
     model.add(Dense(num_classes, activation="softmax"))
 
@@ -332,8 +328,6 @@ def create_efficientnet_model_compiled(
 # /////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////////////////////////////////////////////////////////////
-
-from tensorflow.keras.applications.inception_v3 import InceptionV3
 
 
 def create_inceptionv3_model_compiled(
